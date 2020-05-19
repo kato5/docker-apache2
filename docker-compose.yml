@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  web:
+    container_name: kato_web
+    build: ./app
+    ports:
+      - "80:80"
+    environment:
+      - MY_HOST=alibaba
+    volumes:
+      - ./www:/var/www/html
+    #links:
+    #  - database
+
+  database:
+    container_name: kato_mysql
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_DATABASE=db5
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=test
+      - MYSQL_ROOT_PASSWORD=test1
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    #links:
+     # - web
+
+  phpmyadmin:
+    container_name: kato_phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - "8080:80"
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: test
+      PMA_HOST: database
+#    links:
+#      - database
+#      - web
